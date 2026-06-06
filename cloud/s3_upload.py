@@ -16,7 +16,6 @@ def get_s3_client():
     )
 
 def upload_dataframe_to_s3(df: pd.DataFrame, filename_prefix: str) -> str:
-    s3 = get_s3_client()
     bucket = os.getenv("S3_BUCKET", "audit-data-bucket")
     
     csv_buffer = io.StringIO()
@@ -25,7 +24,12 @@ def upload_dataframe_to_s3(df: pd.DataFrame, filename_prefix: str) -> str:
     today = datetime.now()
     key = f"audit-data/{today.year}/{today.month:02d}/{filename_prefix}_{today.strftime('%Y%m%d_%H%M')}.csv"
     
+    if not os.getenv("AWS_ACCESS_KEY"):
+        print("  [Info] S3 skipped (demo mode - no AWS credentials configured)")
+        return f"demo-path/{key}"
+
     try:
+        s3 = get_s3_client()
         s3.put_object(
             Bucket=bucket,
             Key=key,
@@ -37,10 +41,10 @@ def upload_dataframe_to_s3(df: pd.DataFrame, filename_prefix: str) -> str:
                 "upload-date": str(today)
             }
         )
-        print(f"  ✅ Uploaded to S3: s3://{bucket}/{key}")
+        print(f"  [Success] Uploaded to S3: s3://{bucket}/{key}")
         return key
     except Exception as e:
-        print(f"  ℹ️  S3 skipped (demo mode - no AWS credentials): {e}")
+        print(f"  [Warning] S3 upload failed: {e}")
         return f"demo-path/{key}"
 
 
@@ -54,5 +58,5 @@ def list_audit_files(prefix="audit-data/"):
         files = [obj["Key"] for obj in response.get("Contents", [])]
         return files
     except Exception as e:
-        print(f"  ℹ️  Cannot list S3 files in demo mode: {e}")
+        print(f"  [Info] Cannot list S3 files in demo mode: {e}")
         return []

@@ -38,26 +38,26 @@ def kpi_card(title, value, color):
         "flex": "1", "minWidth": "180px", "boxShadow": "0 2px 8px rgba(0,0,0,0.15)"
     })
 
-app = dash.Dash(__name__, title="AG Audit J&K - Analytics Dashboard")
+app = dash.Dash(__name__, title="NREGA Analytics Dashboard")
 
 app.layout = html.Div([
 
     html.Div([
-        html.H1("🏛️ Office of the Accountant General (Audit) J&K",
+        html.H1("NREGA Audit Analytics Dashboard",
                 style={"color": "white", "margin": "0", "fontSize": "22px"}),
         html.P("Data Automation & Backend Infrastructure — Audit Analytics Dashboard",
                style={"color": "#aab4d4", "margin": "5px 0 0 0", "fontSize": "14px"})
     ], style={"background": COLORS["primary"], "padding": "20px 30px", "borderBottom": "4px solid #fdd835"}),
 
     html.Div([
-        html.Span("📊 Pipeline Status: "),
+        html.Span("Pipeline Status: "),
         html.Span(
-            f"✅ {validation['total_records']} records loaded | ",
+            f"[Success] {validation['total_records']} records loaded | ",
             style={"color": COLORS["success"], "fontWeight": "bold"}
         ),
         html.Span(
-            f"⚠️ {validation['issues_found']} data issues flagged"
-            if validation["issues_found"] > 0 else "✅ All data quality checks passed",
+            f"[Warning] {validation['issues_found']} data issues flagged"
+            if validation["issues_found"] > 0 else "[Success] All data quality checks passed",
             style={"color": COLORS["warning"] if validation["issues_found"] > 0 else COLORS["success"],
                    "fontWeight": "bold"}
         ),

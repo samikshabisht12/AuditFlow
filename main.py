@@ -14,29 +14,29 @@ except Exception:
 
 def run_full_pipeline():
     print("\n" + "="*60)
-    print("  AG AUDIT J&K — DATA PIPELINE")
+    print("  NREGA Data Audit Pipeline")
     print(f"  Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("="*60)
 
-    print("\n📥 STEP 1: Scraping NREGA data...")
+    print("\n[Step 1] Extracting Data...")
     df_raw = scrape_nrega_statewise()
-    print(f"   → {len(df_raw)} raw records collected")
+    print(f"   -> {len(df_raw)} raw records collected")
 
-    print("\n🧹 STEP 2: Cleaning data...")
+    print("\n[Step 2] Cleaning and Standardizing Data...")
     df_clean = clean_nrega_data(df_raw)
-    print(f"   → {len(df_clean)} clean records ready")
+    print(f"   -> {len(df_clean)} clean records ready")
 
-    print("\n✅ STEP 3: Validating data quality...")
+    print("\n[Step 3] Validating Data Quality...")
     report = validate_data(df_clean)
     if report["passed"]:
-        print("   → All validation checks PASSED")
+        print("   -> All validation checks PASSED")
     else:
-        print(f"   → {report['issues_found']} issues found:")
+        print(f"   -> {report['issues_found']} issues found:")
         for issue in report["issues"]:
-            print(f"      ⚠️  {issue}")
+            print(f"      !  {issue}")
 
     if DB_AVAILABLE:
-        print("\n💾 STEP 4: Storing in PostgreSQL database...")
+        print("\n[Step 4] Storing in Database...")
         try:
             create_tables()
             save_to_db(df_clean)
@@ -47,12 +47,12 @@ def run_full_pipeline():
                 status="SUCCESS" if report["passed"] else "COMPLETED_WITH_FLAGS"
             )
         except Exception as e:
-            print(f"   → Database error: {e}")
-            print("   → Database not connected — running in demo mode")
+            print(f"   -> Database error: {e}")
+            print("   -> Database not connected — running in demo mode")
     else:
-        print("\n💾 STEP 4: Database not connected — running in demo mode")
+        print("\n[Step 4] Database not connected — running in demo mode")
 
-    print("\n☁️  STEP 5: Backing up to cloud storage (AWS S3)...")
+    print("\n[Step 5] Cloud Backup...")
     s3_path = upload_dataframe_to_s3(df_clean, "nrega_data")
 
     print("\n" + "="*60)
@@ -64,7 +64,7 @@ def run_full_pipeline():
     print(f"  Finished          : {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("="*60)
 
-    print("\n📊 SAMPLE OUTPUT:")
+    print("\n[Sample Output]")
     print(df_clean[["state", "utilization_rate", "risk_flag"]].to_string(index=False))
 
     return df_clean

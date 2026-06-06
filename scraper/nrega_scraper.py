@@ -27,8 +27,8 @@ def scrape_nrega_statewise():
         df["source"] = "NREGA_PUBLIC_PORTAL"
         print(f"Successfully scraped {len(df)} records from NREGA portal")
         return df
-    except Exception as e:
-        print(f"Live scraping failed ({e}), using sample data instead")
+    except Exception:
+        print("  [Info] Live website unreachable. Using sample data instead.")
         return get_sample_data()
 
 

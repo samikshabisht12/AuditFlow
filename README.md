@@ -77,15 +77,15 @@ cp .env.example .env
 Ensure the following variables are defined in your `.env` file:
 
 **Database Configuration (Optional)**
+You can connect to standard PostgreSQL or a managed service like Supabase.
+For Supabase (Recommended), use the connection URI:
+- `DATABASE_URL`
+
+Alternatively, provide individual PostgreSQL credentials:
 - `DB_USER`
 - `DB_PASS`
 - `DB_HOST`
 - `DB_NAME`
-
-**AWS S3 Configuration (Optional)**
-- `AWS_ACCESS_KEY`
-- `AWS_SECRET_KEY`
-- `S3_BUCKET`
 
 **API Authentication Keys**
 - `ADMIN_API_KEY`

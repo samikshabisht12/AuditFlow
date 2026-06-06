@@ -7,10 +7,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def get_engine():
-    db_url = (
-        f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}"
-        f"@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}"
-    )
+    db_url = os.getenv("DATABASE_URL")
+    if not db_url:
+        db_url = (
+            f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}"
+            f"@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}"
+        )
     return create_engine(db_url)
 
 
@@ -45,13 +47,12 @@ def create_tables():
             );
         """))
         conn.commit()
-    print("  Database tables ready ✅")
-
+    print("  [Success] Database tables ready")
 
 def save_to_db(df: pd.DataFrame, table: str = "nrega_data"):
     engine = get_engine()
     df.to_sql(table, engine, if_exists="append", index=False)
-    print(f"  Saved {len(df)} records to '{table}' table ✅")
+    print(f"  [Success] Saved {len(df)} records to '{table}' table")
 
 
 def log_pipeline_run(action, records, issues, status):
