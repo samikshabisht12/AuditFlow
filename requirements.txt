@@ -1,0 +1,12 @@
+requests
+beautifulsoup4
+selenium
+pandas
+psycopg2-binary
+flask
+dash
+plotly
+boto3
+python-dotenv
+schedule
+sqlalchemy
